@@ -1,0 +1,14 @@
+coverage
+docstring-expander
+jupyterlab
+matplotlib
+nose
+numpy
+pandas
+pip>20
+pylint
+python-libsbml
+seaborn
+tellurium
+twine
+urllib3
