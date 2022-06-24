@@ -3,18 +3,18 @@
 
 @author: joseph-hellerstein
 
-Core of Tellurium Analyzer
+Analysis abstraction for an SBML model.
 """
 
-import tellurium_analyzer as ta
-from tellurium_analyzer._parameterManager import Parameter
-import tellurium_analyzer._constants as cn
-from tellurium_analyzer._optimizer import Optimizer
-from tellurium_analyzer.namedTimeseries import NamedTimeseries, TIME, mkNamedTimeseries
-from tellurium_analyzer.logs import Logger
-import tellurium_analyzer.timeseriesPlotter as tp
-from tellurium_analyzer import rpickle
-from tellurium_analyzer import _helpers
+import analyzeSBML as ta
+from analyzeSBML._parameterManager import Parameter
+import analyzeSBML._constants as cn
+from analyzeSBML._optimizer import Optimizer
+from analyzeSBML.namedTimeseries import NamedTimeseries, TIME, mkNamedTimeseries
+from analyzeSBML.logs import Logger
+import analyzeSBML.timeseriesPlotter as tp
+from analyzeSBML import rpickle
+from analyzeSBML import _helpers
 
 import copy
 import inspect
@@ -63,7 +63,7 @@ class ModelFitterCore(rpickle.RPickler):
             roadrunner model or antimony model
         observedData: NamedTimeseries/str
             str: path to CSV file
-        parametersToFit: list-str/tellurium_analyzer.Parameter/None
+        parametersToFit: list-str/analyzeSBML.Parameter/None
             parameters in the model that you want to fit
             if None, no parameters are fit
         selectedColumns: list-str
@@ -95,8 +95,8 @@ class ModelFitterCore(rpickle.RPickler):
 
         Usage
         -----
-        parametersToFit = [tellurium_analyzer.Parameter("k1", lower=1, upper=10, value=5),
-                           tellurium_analyzer.Parameter("k2", lower=2, upper=6, value=3),
+        parametersToFit = [analyzeSBML.Parameter("k1", lower=1, upper=10, value=5),
+                           analyzeSBML.Parameter("k2", lower=2, upper=6, value=3),
                           ]
         ftter = ModelFitter(roadrunnerModel, "observed.csv",
             parametersToFit=parametersToFit)
@@ -377,11 +377,11 @@ class ModelFitterCore(rpickle.RPickler):
         elements = []
         for element in parametersToFit:
             # Get the lower bound, upper bound, and initial value for the parameter
-            if not isinstance(element, tellurium_analyzer.Parameter):
-                element = tellurium_analyzer.Parameter(element,
+            if not isinstance(element, analyzeSBML.Parameter):
+                element = analyzeSBML.Parameter(element,
                       lower=parameterLowerBound, upper=parameterUpperBound)
             elements.append(element)
-        return tellurium_analyzer.Parameter.mkParameters(elements)
+        return analyzeSBML.Parameter.mkParameters(elements)
 
     @classmethod
     def initializeRoadrunnerModel(cls, modelSpecification):
@@ -587,7 +587,7 @@ class ModelFitterCore(rpickle.RPickler):
 
         Returns
         -------
-        list-tellurium_analyzer.Parameter
+        list-analyzeSBML.Parameter
         """
         dct = {}
         self.initializeRoadRunnerModel()

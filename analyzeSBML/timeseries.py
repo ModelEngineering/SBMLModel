@@ -12,8 +12,8 @@ Alternatively, if a pandas object is returned from an operation,
 then use Timeseries or TimeseriesSer to reconstruct the object.
 """
 
-from tellurium_analysis import util
-import tellurium_analysis.constants as cn
+from analyzeSBML import util
+import analyzeSBML.constants as cn
 
 import numpy as np
 import pandas as pd

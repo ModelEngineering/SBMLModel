@@ -1,4 +1,4 @@
-from tellurium_analysis.options import Options
+from analyzeSBML.options import Options
 
 import unittest
 

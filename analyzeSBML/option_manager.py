@@ -1,7 +1,7 @@
 """Manages options used in ControlSBML."""
 
-import tellurium_analysis.constants as cn
-from tellurium_analysis.options import Options
+import analyzeSBML.constants as cn
+from analyzeSBML.options import Options
 
 from docstring_expander.expander import Expander
 import matplotlib.pyplot as plt

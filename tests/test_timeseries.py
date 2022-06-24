@@ -1,5 +1,5 @@
-from tellurium_analysis.timeseries import Timeseries, TimeseriesSer
-import tellurium_analysis.constants as cn
+from analyzeSBML.timeseries import Timeseries, TimeseriesSer
+import analyzeSBML.constants as cn
 
 import numpy as np
 import pandas as pd

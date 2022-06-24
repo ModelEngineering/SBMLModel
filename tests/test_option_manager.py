@@ -1,5 +1,5 @@
-from tellurium_analysis.option_manager import OptionManager
-import tellurium_analysis.constants as cn
+from analyzeSBML.option_manager import OptionManager
+import analyzeSBML.constants as cn
 
 import matplotlib.pyplot as plt
 import numpy as np

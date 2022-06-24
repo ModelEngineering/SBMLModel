@@ -1,7 +1,7 @@
-import tellurium_analysis.constants as cn
-import tellurium_analysis as ta
-from tellurium_analysis.option_manager import OptionManager
-from tellurium_analysis.options import Options
+import analyzeSBML.constants as cn
+import analyzeSBML as ta
+from analyzeSBML.option_manager import OptionManager
+from analyzeSBML.options import Options
 
 from docstring_expander.expander import Expander
 import matplotlib.pyplot as plt
