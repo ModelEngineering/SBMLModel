@@ -32,6 +32,8 @@ The ``Parameter`` class describes parameter constraints.
 * value: value of the parameter
 * name: name of the parameter
 
+The ``ParameterManager`` class is used to manage parameters in multiple models.
+
 # Developer Notes
 1. Graphics on Ubuntu requires tkinter. Use ``sudo apt install python3.8-tk``.
 

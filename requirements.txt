@@ -1,6 +1,7 @@
 coverage
 docstring-expander
 jupyterlab
+lmfit
 matplotlib
 nose
 numpy

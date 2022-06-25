@@ -32,7 +32,12 @@ TEST_DIR = os.path.join(PROJECT_DIR, "tests")
 DATA_DIR = os.path.join(PROJECT_DIR, "data")
 BIOMODELS_ZIP_FILENAME = "biomodels.zip"
 
+# Numerical thresholds
+PARAMETER_LOWER_BOUND = 0
+PARAMETER_UPPER_BOUND =10
+
 # Constants
+ALL = "#all#"  # Model for all parameters
 A_DF = None  # Use default value of A matrix
 B_DF = None  # Use default value of B matrix
 C_DF = None  # Use default value of C matrix

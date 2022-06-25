@@ -7,10 +7,9 @@ Created on Tue Feb 9, 2021
 TODO: make sure changes are propagated from ALL to others
 """
 
-from SBstoat import Parameter
-import SBstoat._constants as cn
-from SBstoat._parameterManager import ParameterManager, ALL
-from tests import _testHelpers as th
+from analyzeSBML import Parameter, ParameterManager
+import analyzeSBML.constants as cn
+from tests import _test_helpers as th
 
 import matplotlib
 import numpy as np
@@ -34,7 +33,7 @@ PARAMETERS = [Parameter(n, lower=l, upper=u, value=v)
 PARAMETERS = [Parameter.mkParameter(p) for p in PARAMETERS]
 PARAMETERS_COLLECTION = [[PARAMETERS[0]], [PARAMETERS[0], PARAMETERS[2]],
       [PARAMETERS[1]]]
-PARAMETERS_COLLECTION = [Parameter.mkParameters(c)
+PARAMETERS_COLLECTION = [Parameter.toLMfit(c)
       for c in PARAMETERS_COLLECTION]
 
 
@@ -84,7 +83,7 @@ class TestParameter(unittest.TestCase):
             return
         def test(parameterNames):
             parameters = [Parameter(n) for n in parameterNames]
-            lmfitParameters = Parameter.mkParameters(parameters)
+            lmfitParameters = Parameter.toLMfit(parameters)
             self.assertEqual(len(lmfitParameters.valuesdict()),
                   len(parameterNames))
         #
@@ -109,7 +108,7 @@ class TestParameterManager(unittest.TestCase):
             self.assertEqual(len(diff), 0)
         #
         modelNames = list(MODEL_NAMES[:self.numModel])
-        modelNames.append(ALL)
+        modelNames.append(cn.ALL)
         test(self.manager.modelDct, lmfit.Parameters, modelNames)
         test(self.manager.parameterDct, lmfit.Parameter, PARAMETER_NAMES)
 
@@ -121,7 +120,7 @@ class TestParameterManager(unittest.TestCase):
               for n, l, u, v in zip(PARAMETER_NAMES, LOWERS, UPPERS, VALUES)]
         parametersCollection = [[parameters[0]], [parameters[0], parameters[2]],
               [parameters[1]]]
-        parametersCollection = [Parameter.mkParameters(c)
+        parametersCollection = [Parameter.toLMfit(c)
               for c in parametersCollection]
         for oldParameters, newParameters in zip(PARAMETERS_COLLECTION,
               parametersCollection):

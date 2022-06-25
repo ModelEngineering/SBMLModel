@@ -1,7 +1,7 @@
-import tellurium_analysis as ta
-from tellurium_analysis import util
-from tellurium_analysis.timeseries import Timeseries
-import tellurium_analysis.constants as cn
+import analyzeSBML as ta
+from analyzeSBML import util
+from analyzeSBML.timeseries import Timeseries
+import analyzeSBML.constants as cn
 
 import pandas as pd
 import numpy as np
@@ -10,7 +10,7 @@ import unittest
 
 
 IGNORE_TEST = False
-IS_PLOT = True
+IS_PLOT = False
 SIZE = 10
 if IS_PLOT:
     import matplotlib

@@ -7,7 +7,7 @@ Analysis abstraction for an SBML model.
 """
 
 import analyzeSBML as ta
-from analyzeSBML._parameterManager import Parameter
+from analyzeSBML.parameter import Parameter
 import analyzeSBML._constants as cn
 from analyzeSBML._optimizer import Optimizer
 from analyzeSBML.namedTimeseries import NamedTimeseries, TIME, mkNamedTimeseries
