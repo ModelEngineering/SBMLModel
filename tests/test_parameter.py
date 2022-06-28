@@ -9,7 +9,6 @@ TODO: make sure changes are propagated from ALL to others
 
 from analyzeSBML import Parameter, ParameterManager
 import analyzeSBML.constants as cn
-from tests import _test_helpers as th
 
 import matplotlib
 import numpy as np
