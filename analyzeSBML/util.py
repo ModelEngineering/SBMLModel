@@ -211,27 +211,39 @@ def setRoadrunnerValue(roadrunner, name_dct):
             value = float(value)
         roadrunner[name] = value
 
-def timeresponse2Timeseries(timeresponse, column_names=None):
+def isNumber(item):
+    return isinstance(item, float) or isinstance(item, int)
+
+def isEqual(items1, items2):
     """
-    Converts a control.Timeresponse object to a time series.
+    Checks for equality for lists of simple types.
 
     Parameters
     ----------
-    timeresponse: control.Timeresponse
-    column_names: list-str
+    items1: list-like or dict or simple type
+    items2: list-like or dict or simple type
     
     Returns
     -------
-    Timeseries
+    bool
     """
-    if len(np.shape(timeresponse.outputs)) == 1:
-        df = pd.DataFrame({0: timeresponse.outputs})
+    is_simple = False
+    for s_type in [int, str, float, bool]:
+        is_simple = is_simple or isinstance(items1, s_type)
+    if is_simple:
+        return items1 == items2
+    # Handle lists and dicts
+    if isinstance(items1, dict):
+        if isinstance(items2, dict):
+            diff = set(items1.keys()).symmetric_difference(items2.keys())
+            if len(diff) > 0:
+                return False
+            trues = [v1 == v2 for v1, v2 in zip(items1.values(), items2.values())]
+        else:
+            return False
     else:
-        df = pd.DataFrame(timeresponse.outputs.transpose())
-    if column_names is not None:
-        df.columns = column_names
-    df.index = timeresponse.t
-    return ta.Timeseries(df)
-
-def isNumber(item):
-    return isinstance(item, float) or isinstance(item, int)
+        items1 = list(items1)
+        items2 = list(items2)
+        trues = [l1 == l2 for l1, l2 in zip(items1, items2)]
+    #
+    return all(trues)

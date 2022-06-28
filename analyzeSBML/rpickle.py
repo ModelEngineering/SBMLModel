@@ -7,19 +7,17 @@ of the object and (b) re-assigning its __dict__.
 
 Objects for which this behavior is desired must inherit RPickler and
 override the following methods as required:
-    rpSerialize(self, dct): updates the __dict__ that is saved
+    rpSerialize(self, dct): updates the __dict__ that is being serialized
     rpConstruct(cls): constructor used for a deserialized object
-    rpDeserialize(self): revisions to deserialized object
+    rpDeserialize(self): updates the deserialized object
 
 The folling is usage for an object obj.
     # Serialize the object and write to a file
-    serializer = Serializer(obj)
-    with open(file_path, "w") as fd:
-        dump(serializer. file_path)
-    # Deserialize the object
-    with open(file_path, "r") as fd:
-        new_serializer = load(serializer. file_path)
-    new_obj = new_serializer.deserialize()
+    with open(path, "wb") as fd:
+        dump(obj, fd)
+    # Deserialize
+    with open(path, "rb") as fd:
+        new_obj = load(fd)
 
 """
 

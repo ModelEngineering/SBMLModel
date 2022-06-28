@@ -39,3 +39,7 @@ The ``ParameterManager`` class is used to manage parameters in multiple models.
 
 # Release Notes
 * Version 0.1.1
+  * Model: get, set, simulate, serialize, copy
+  * Parameter: constructor
+  * Timeseries: construct
+  * plotOneTS, plotManTS

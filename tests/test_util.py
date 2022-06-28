@@ -88,6 +88,28 @@ class TestFunctions(unittest.TestCase):
         for mat in [MAT, NAMED_ARRAY, DF]:
             util.plotMat(mat, title="test", figsize=(5,5), is_plot=IS_PLOT)
 
+    def testIsEquals(self):
+        if IGNORE_TEST:
+            return
+        items1 = [1, 2, "red"]
+        items2 = [1, 2, "black"]
+        self.assertTrue(util.isEqual(items1, items1))
+        self.assertFalse(util.isEqual(items1, items2))
+        #
+        dct1 = {1: 1, 2: 2, 3: "red"}
+        dct2 = {1:1 , 2:2 , 3: "black"}
+        dct3 = {1:1 , 2:2 , 4: "black"}
+        self.assertTrue(util.isEqual(dct1, dct1))
+        self.assertFalse(util.isEqual(dct1, dct2))
+        self.assertFalse(util.isEqual(dct1, dct3))
+        #
+        self.assertTrue(util.isEqual("a", "a"))
+        self.assertTrue(util.isEqual(1, 1))
+        self.assertTrue(util.isEqual(1.0, 1.0))
+        self.assertTrue(util.isEqual(True, True))
+        self.assertFalse(util.isEqual(True, 5))
+        
+
 
 if __name__ == '__main__':
   unittest.main()

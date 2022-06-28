@@ -1,4 +1,4 @@
-from controlSBML.make_roadrunner import makeRoadrunner
+from analyzeSBML.make_roadrunner import makeRoadrunner
 
 import os
 import unittest
