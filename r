@@ -7,4 +7,5 @@ grep -v "Object of type" /tmp/r.out | \
   grep -v "PyCapsule" | \
   grep -v "Traceback (most recent" | \
   grep -v "_callTestMethod"  | \
+  grep -v "No version"  | \
   grep -v " method()$"

@@ -35,7 +35,8 @@ The ``Parameter`` class describes parameter constraints.
 The ``ParameterManager`` class is used to manage parameters in multiple models.
 
 # Developer Notes
-1. Graphics on Ubuntu requires tkinter. Use ``sudo apt install python3.8-tk``.
+1. A bug in Tellurium makes it fail on 3.10. So, need to back level
+python to 3.9. ``sudo apt install python3.x-venv``. More details at [link](https://stackoverflow.com/questions/58310498/mkvirtualenv-says-no-module-named-distutils-spawn-when-making-a-venv-for-non-d)
 
 # Release Notes
 * Version 0.1.1
