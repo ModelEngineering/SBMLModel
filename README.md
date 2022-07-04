@@ -27,13 +27,6 @@ The ``Timeseries`` class provides a way to contain data taken from the same time
 * Timeseries(dataframe)
 * mat2TS: converts a matrix to a timeseries
 
-The ``Parameter`` class describes parameter constraints.
-* Constructor: parameterName, lower_bound, upper_bound
-* value: value of the parameter
-* name: name of the parameter
-
-The ``ParameterManager`` class is used to manage parameters in multiple models.
-
 # Developer Notes
 1. A bug in Tellurium makes it fail on 3.10. So, need to back level
 python to 3.9. ``sudo apt install python3.x-venv``. More details at [link](https://stackoverflow.com/questions/58310498/mkvirtualenv-says-no-module-named-distutils-spawn-when-making-a-venv-for-non-d)
