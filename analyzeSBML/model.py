@@ -30,6 +30,8 @@ TO DO:
 
 import analyzeSBML.constants as cn
 from analyzeSBML import rpickle
+from analyzeSBML.make_roadrunner import makeRoadrunner
+from analyzeSBML.timeseries import Timeseries
 import analyzeSBML as anl
 from analyzeSBML import util
 
@@ -56,7 +58,7 @@ class Model(rpickle.RPickler):
     SERIALIZATION_ATRS = [MODEL_REFERENCE, ANTIMONY]
     # Attributes checked for equality betweeen objects
     ISEQUAL_ATRS = [ANTIMONY, "species_names", "parameter_names", "reaction_names",
-          "kinetic_dct",  MODEL_REFERENCE]
+          "kinetic_dct"]
 
     def __init__(self, model_reference=None):
         """
@@ -74,7 +76,7 @@ class Model(rpickle.RPickler):
         """
         if model_reference is not None:
             self.model_reference = model_reference  # MODEL_REFERENCE
-            self.roadrunner = anl.makeRoadrunner(self.model_reference)  # MODEL_REFERENCE
+            self.roadrunner = makeRoadrunner(self.model_reference)  # MODEL_REFERENCE
             self.deserialization_dct = None
             self._initialize()
         else:
@@ -221,11 +223,10 @@ class Model(rpickle.RPickler):
     def simulate(self, *pargs, **kwargs):
         """
         Runs a simulation. Defaults to parameter values in the simulation.
-        Returns a NamedTimeseries.
 
         Return
         ------
-        NamedTimeseries (or None if fail to converge)
+        Timeseries (or None if fail to converge)
         """
         data = self.roadrunner.simulate(*pargs)
         columns = [c[1:-1] if c[0] =="[" else c for c in data.colnames]

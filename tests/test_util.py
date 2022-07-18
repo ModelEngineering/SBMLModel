@@ -1,4 +1,4 @@
-import analyzeSBML as ta
+import analyzeSBML as ans
 from analyzeSBML import util
 from analyzeSBML.timeseries import Timeseries
 import analyzeSBML.constants as cn
@@ -12,9 +12,6 @@ import unittest
 IGNORE_TEST = False
 IS_PLOT = False
 SIZE = 10
-if IS_PLOT:
-    import matplotlib
-    matplotlib.use('TkAgg')
 times = [1.0*n for n in range(SIZE)]
 TS = Timeseries(pd.DataFrame({"a": range(SIZE)}), times=times)
 TS["b"] = 10*TS["a"]
@@ -31,36 +28,17 @@ DF = pd.DataFrame(NAMED_ARRAY, columns=NAMED_ARRAY.colnames)
 #############################
 class TestFunctions(unittest.TestCase):
 
-    def setUp(self):
-        pass
- 
-    def testPlotOneTS(self):
-        if IGNORE_TEST:
-          return
-        ta.plotOneTS(TS, ylabel="values", xlabel="sec",
-              is_plot=IS_PLOT)
-
-    def testPlotManyTS(self):
-        if IGNORE_TEST:
-          return
-        df = TS.applymap(lambda v: 100*v)
-        ts = Timeseries(df, times=df.index)
-        util.plotManyTS(TS, ts, ylabel="values", xlabel="sec",
-              is_plot=IS_PLOT, names=["first", "second"])
-        ta.plotManyTS(TS, ts, ylabel="values", xlabel="sec",
-              is_plot=IS_PLOT, names=["first", "second"], ncol=2)
-
     def testMakeSimulationTimes(self):
         if IGNORE_TEST:
           return
-        times = util.makeSimulationTimes()
+        times = ans.makeSimulationTimes()
         self.assertTrue(isinstance(times, np.ndarray))
         #
-        times = util.makeSimulationTimes(start_time=1, end_time=4)
+        times = ans.makeSimulationTimes(start_time=1, end_time=4)
         self.assertTrue(times[0] == 1)
         self.assertTrue(times[-1] == 4)
         #
-        time1s = util.makeSimulationTimes(start_time=1, end_time=4,
+        time1s = ans.makeSimulationTimes(start_time=1, end_time=4,
             points_per_time=100)
         self.assertGreater(len(time1s), len(times))
 
@@ -81,12 +59,6 @@ class TestFunctions(unittest.TestCase):
             self.assertTrue(any(["A" in c for c in df.columns]))
         df = util.mat2DF(MAT)
         self.assertTrue(isinstance(df, pd.DataFrame))
-
-    def testPlotMat(self):
-        if IGNORE_TEST:
-          return
-        for mat in [MAT, NAMED_ARRAY, DF]:
-            util.plotMat(mat, title="test", figsize=(5,5), is_plot=IS_PLOT)
 
     def testIsEquals(self):
         if IGNORE_TEST:
@@ -109,7 +81,6 @@ class TestFunctions(unittest.TestCase):
         self.assertTrue(util.isEqual(True, True))
         self.assertFalse(util.isEqual(True, 5))
         
-
 
 if __name__ == '__main__':
   unittest.main()

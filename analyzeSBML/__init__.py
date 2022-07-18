@@ -1,5 +1,5 @@
-from analyzeSBML.make_roadrunner import makeRoadrunner
-from analyzeSBML.util import plotOneTS, plotManyTS
+from analyzeSBML.util import makeSimulationTimes
+from analyzeSBML.plotting import plotOneTS, plotManyTS, plotMat
 from analyzeSBML.timeseries import Timeseries
 from analyzeSBML.model import Model
-from analyzeSBML import rpickle
+from analyzeSBML.rpickle import load, dump

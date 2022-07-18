@@ -1,0 +1,8 @@
+#!/bin/bash
+cd ~/analyzeSBML
+for f in model option_manager options plotting rpickle timeseries util
+do
+  echo ""
+  echo "***$f"
+  r $f
+done

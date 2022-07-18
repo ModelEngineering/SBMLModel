@@ -2,6 +2,7 @@ from analyzeSBML.timeseries import Timeseries, TimeseriesSer
 import analyzeSBML.constants as cn
 
 import numpy as np
+import os
 import pandas as pd
 import unittest
 import tellurium as te
@@ -12,6 +13,8 @@ IS_PLOT = False
 if IS_PLOT:
     import matplotlib
     matplotlib.use('TkAgg')
+DIR = os.path.dirname(os.path.abspath(__file__))
+FILE_CSV = os.path.join(DIR, "test_timeseries.csv")
 EFFECTOR_DCT = {"J0": "E_J0"}
 END_TIME = 5
 COLUMNS = ["[a]", "b"]
@@ -42,7 +45,14 @@ NAMED_ARRAY = rr.simulate()
 class TestTimeseries(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.remove()
+
+    def tearDown(self):
+        self.remove()
+
+    def remove(self):
+       if os.path.isfile(FILE_CSV):
+           os.remove(FILE_CSV)
 
     def _validate(self, ts):
         self.assertGreater(len(ts), 0)
@@ -52,6 +62,25 @@ class TestTimeseries(unittest.TestCase):
         self.assertTrue("a" in ts.columns)
         self.assertTrue(all(trues))
         self.assertFalse(np.isnan(np.sum(ts.values.flatten())))
+
+    def testConstructorCSV(self):
+        if IGNORE_TEST:
+            return
+        ts = Timeseries(MAT, times=TIMES, columns=COLUMNS)
+        df = ts.copy()
+        df["time"] = 0.001*ts.index
+        df.to_csv(FILE_CSV, index=False)
+        new_ts = Timeseries(FILE_CSV)
+        self.assertTrue(ts.equals(new_ts))
+
+    def testConstructorCSVNoTimeColumn(self):
+        if IGNORE_TEST:
+            return
+        ts = Timeseries(MAT, times=TIMES, columns=COLUMNS)
+        df = ts.copy()
+        df.to_csv(FILE_CSV, index=False)
+        with self.assertRaises(ValueError):
+            _ = Timeseries(FILE_CSV)
 
     def testConstructorTS(self):
         if IGNORE_TEST:

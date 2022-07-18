@@ -94,12 +94,13 @@ class TimeseriesSer(pd.Series):
 
 class Timeseries(pd.DataFrame):
 
-    def __init__(self, mat, times=None, columns=None):
+    def __init__(self, data, times=None, columns=None):
 
         """
         Parameters
         ----------
-        mat: DataFrame, numpy.darray, NamedArray
+        data: DataFrame, numpy.darray, NamedArray, csv file (with index)
+            for csv file, must have a column labelled "time"
         times: list-float (time in seconds)
         columns: list-str
 
@@ -110,43 +111,49 @@ class Timeseries(pd.DataFrame):
                are not converted.
         """
         # The following blocks create df and times
-        if isinstance(mat, Timeseries):
-            df = mat
+        if isinstance(data, str):
+            df = pd.read_csv(data)
+            if not cn.TIME in df.columns:
+                raise ValueError("%s must have a time column" % data)
+            times = df[cn.TIME]
+            del df[cn.TIME]
+        elif isinstance(data, Timeseries):
+            df = data
             times = df.index
-        elif isinstance(mat, pd.Series):
+        elif isinstance(data, pd.Series):
             raise ValueError("Use TimeseriesSer, not TimeSeries.")
-        elif isinstance(mat, pd.DataFrame):
+        elif isinstance(data, pd.DataFrame):
             if columns is None:
-                mat_columns = list(mat.columns)
+                mat_columns = list(data.columns)
             else:
                 mat_columns = columns
-            df = pd.DataFrame(mat, index=mat.index, columns=mat_columns)
+            df = pd.DataFrame(data, index=data.index, columns=mat_columns)
             if times is None:
-                if cn.TIME in mat.columns:
+                if cn.TIME in data.columns:
                     times = df[cn.TIME]
                     del df[cn.TIME]
                 else:
                     times = df.index
         #
-        elif "NamedArray" in str(type(mat)):
+        elif "NamedArray" in str(type(data)):
             if columns is None:
-                mat_columns = list(mat.colnames)
+                mat_columns = list(data.colnames)
             else:
                 mat_columns = columns
-            df = pd.DataFrame(mat, columns=mat_columns)
+            df = pd.DataFrame(data, columns=mat_columns)
             if times is None:
-                if cn.TIME in mat.colnames:
+                if cn.TIME in data.colnames:
                     times = df[cn.TIME]
                     del df[cn.TIME]
                 else:
                     raise ValueError("No time information found.")
         #
-        elif isinstance(mat, np.ndarray):
+        elif isinstance(data, np.ndarray):
             if columns is None:
                 raise ValueError("No column information")
             else:
                 mat_columns = columns
-            df = pd.DataFrame(mat, columns=mat_columns)
+            df = pd.DataFrame(data, columns=mat_columns)
             if times is None:
                 raise ValueError("No time information found.")
         else:
