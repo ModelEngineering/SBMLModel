@@ -1,12 +1,14 @@
 coverage
 docstring-expander
 jupyterlab
+lmfit
 nose2
 numpy
 pandas
 pip>20
 pylint
 python-libsbml
+seaborn
 sphinx
 tellurium
 twine
