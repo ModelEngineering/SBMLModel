@@ -38,6 +38,7 @@ from analyzeSBML import util
 import copy
 import lmfit
 import numpy as np
+import pandas as pd
 import tellurium as te
 import typing
 
@@ -220,14 +221,31 @@ class Model(rpickle.RPickler):
         serializer.serialize()
         return serializer.deserialize()
  
-    def simulate(self, *pargs, **kwargs):
+    def simulate(self, *pargs, noise_mag=0, **kwargs):
         """
         Runs a simulation. Defaults to parameter values in the simulation.
+ 
+        Parameters
+        ----------
+        noise_mag: positive float (max magnitude of noise added)
 
         Return
         ------
         Timeseries (or None if fail to converge)
         """
+        noise_mag = np.abs(noise_mag)
+        self.roadrunner.reset()
         data = self.roadrunner.simulate(*pargs)
         columns = [c[1:-1] if c[0] =="[" else c for c in data.colnames]
-        return anl.Timeseries(data, columns=columns)
+        data_ts = anl.Timeseries(data, columns=columns)
+        if noise_mag > 0:
+            nrow = len(data_ts)
+            ncol = len(data_ts.columns)
+            random_arr = np.random.rand(nrow*ncol)
+            random_arr = noise_mag*random_arr
+            random_arr = np.reshape(random_arr, (nrow, ncol))
+            random_df = pd.DataFrame(random_arr, columns=data_ts.columns,
+                index=data_ts.index)
+            data_df = pd.DataFrame(data_ts) + random_df
+            data_ts = Timeseries(data_df)
+        return data_ts

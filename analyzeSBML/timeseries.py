@@ -157,7 +157,8 @@ class Timeseries(pd.DataFrame):
             if times is None:
                 raise ValueError("No time information found.")
         else:
-            raise ValueError("Unsupported data container.")
+            df = pd.DataFrame(data)
+            times = np.array(df.index)/cn.MS_IN_SEC
         #
         df.index = self._convertTime(times)
         # Fix the columns if needed

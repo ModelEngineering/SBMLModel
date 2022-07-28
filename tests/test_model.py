@@ -88,6 +88,12 @@ class TestModel(unittest.TestCase):
         diff = np.abs(self.model.get("A") - self.model.get("B"))
         self.assertLess(diff, 0.001)
         self.assertEqual(len(ts), num_point)
+        #
+        noise_ts = self.model.simulate(0, 20, num_point, noise_mag=0.1)
+        diff_df = noise_ts - ts
+        variance = np.var(diff_df.values.flatten())
+        expected = 1/12*1/len(diff_df)
+        self.assertLess(np.abs(variance - expected), 0.01)
 
     def testRpSerialize(self):
         if IGNORE_TEST:
