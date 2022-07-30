@@ -32,7 +32,7 @@ The ``Timeseries`` class provides a way to contain data taken from the same time
 python to 3.9. ``sudo apt install python3.x-venv``. More details at [link](https://stackoverflow.com/questions/58310498/mkvirtualenv-says-no-module-named-distutils-spawn-when-making-a-venv-for-non-d)
 
 # Release Notes
-* Version 0.1.1
+* Version 0.1.1 (current)
   * Model: get, set, simulate, serialize, copy
   * Parameter: constructor
   * Timeseries: construct
