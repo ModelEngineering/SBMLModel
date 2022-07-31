@@ -22,12 +22,6 @@ Usage example:
         recovered_model = rpickle.load(fd)
 """
 
-"""
-TO DO:
-1. self.kinetics_dct: reaction name, kinetics law
-2. Test subclassing
-"""
-
 import analyzeSBML.constants as cn
 from analyzeSBML import rpickle
 from analyzeSBML.make_roadrunner import makeRoadrunner
@@ -38,9 +32,11 @@ from analyzeSBML import util
 import copy
 import lmfit
 import numpy as np
+import os
 import pandas as pd
 import tellurium as te
 import typing
+import zipfile
 
 # Attributes
 MODEL_REFERENCE = "model_reference"
@@ -50,6 +46,7 @@ PARAMETER_DCT = "parameter_dct"
 DESERIALIZATION_DCT = "deserialization_dct"
 CURRENT_TIME = "current_time"
 IS_DEBUG = True
+PREFIX = "BIOMD0000000%03d.xml"
 
 
 class Model(rpickle.RPickler):
@@ -249,3 +246,26 @@ class Model(rpickle.RPickler):
             data_df = pd.DataFrame(data_ts) + random_df
             data_ts = Timeseries(data_df)
         return data_ts
+
+    @staticmethod
+    def getModelFromDataPath(model_num):
+        """
+        Gets a numbered model.
+
+        Parameters
+        ----------
+        model_num: int
+        
+        Returns
+        -------
+        Model
+        """
+        ffile = PREFIX % model_num
+        archive_path = os.path.join(cn.DATA_DIR, "biomodels.zip")
+        with zipfile.ZipFile(archive_path) as myzip:
+            with myzip.open(ffile) as myfile:
+                byte_lines = (myfile.readlines())
+        lines = [l.decode() for l in byte_lines]
+        model_str = "\n".join(lines)
+        model = Model(model_str)
+        return model

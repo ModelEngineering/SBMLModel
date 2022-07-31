@@ -129,7 +129,13 @@ class TestModel(unittest.TestCase):
         with open(TEST_FILE1, "rb") as fd:
             new_model = rpickle.load(fd)
         self.assertTrue(model.isEqual(new_model))
- 
+
+    def testGetModelFromDataPath(self):
+        if IGNORE_TEST:
+            return
+        model = anl.Model.getModelFromDataPath(12)
+        self.assertTrue("Model" in str(type(model)))
+        self.assertGreater(len(model.species_names), 0)
 
 
 if __name__ == '__main__':
