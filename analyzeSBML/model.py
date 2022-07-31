@@ -248,7 +248,7 @@ class Model(rpickle.RPickler):
         return data_ts
 
     @staticmethod
-    def getModelFromDataPath(model_num):
+    def getBioModel(model_num):
         """
         Gets a numbered model.
 

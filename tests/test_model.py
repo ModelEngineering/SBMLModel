@@ -130,10 +130,10 @@ class TestModel(unittest.TestCase):
             new_model = rpickle.load(fd)
         self.assertTrue(model.isEqual(new_model))
 
-    def testGetModelFromDataPath(self):
+    def testGetBioModel(self):
         if IGNORE_TEST:
             return
-        model = anl.Model.getModelFromDataPath(12)
+        model = anl.Model.getBioModel(12)
         self.assertTrue("Model" in str(type(model)))
         self.assertGreater(len(model.species_names), 0)
 
