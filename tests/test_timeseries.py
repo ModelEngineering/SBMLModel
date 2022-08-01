@@ -144,12 +144,6 @@ class TestTimeseries(unittest.TestCase):
         new_ts = ts[["a", "b"]]
         self._validate(new_ts)
 
-    def testSerError(self):
-        if IGNORE_TEST:
-          return
-        with self.assertRaises(ValueError):
-            _ = Timeseries(TS["b"])
-
     def test_df(self):
         if IGNORE_TEST:
           return
