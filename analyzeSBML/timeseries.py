@@ -120,8 +120,12 @@ class Timeseries(pd.DataFrame):
         elif isinstance(data, Timeseries):
             df = data
             times = df.index
+        elif isinstance(data, TimeseriesSer):
+            df = pd.DataFrame(data)
+            times = [v/cn.MS_IN_SEC for v in df.index]
         elif isinstance(data, pd.Series):
-            raise ValueError("Use TimeseriesSer, not TimeSeries.")
+            df = pd.DataFrame(data)
+            times = df.index
         elif isinstance(data, pd.DataFrame):
             if columns is None:
                 mat_columns = list(data.columns)
