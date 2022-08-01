@@ -58,7 +58,7 @@ class Model(rpickle.RPickler):
     ISEQUAL_ATRS = [ANTIMONY, "species_names", "parameter_names", "reaction_names",
           "kinetic_dct"]
 
-    def __init__(self, model_reference=None):
+    def __init__(self, model_reference=None, biomodel_num=None):
         """
         Abstraction for analysis of an SBML model.
 
@@ -73,6 +73,7 @@ class Model(rpickle.RPickler):
           for serialization
         """
         if model_reference is not None:
+            self.biomodel_num = biomodel_num
             self.model_reference = model_reference  # MODEL_REFERENCE
             self.roadrunner = makeRoadrunner(self.model_reference)  # MODEL_REFERENCE
             self.deserialization_dct = None
@@ -267,7 +268,7 @@ class Model(rpickle.RPickler):
                 byte_lines = (myfile.readlines())
         lines = [l.decode() for l in byte_lines]
         model_str = "\n".join(lines)
-        model = Model(model_str)
+        model = Model(model_str, biomodel_num=model_num)
         return model
 
     @classmethod
