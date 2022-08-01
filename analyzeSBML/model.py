@@ -46,7 +46,7 @@ PARAMETER_DCT = "parameter_dct"
 DESERIALIZATION_DCT = "deserialization_dct"
 CURRENT_TIME = "current_time"
 IS_DEBUG = True
-PREFIX = "BIOMD0000000%03d.xml"
+PREFIX = "BIOMD000000%04d.xml"
 
 
 class Model(rpickle.RPickler):
@@ -247,8 +247,8 @@ class Model(rpickle.RPickler):
             data_ts = Timeseries(data_df)
         return data_ts
 
-    @staticmethod
-    def getBioModel(model_num):
+    @classmethod
+    def getBiomodel(cls, model_num):
         """
         Gets a numbered model.
 
@@ -269,3 +269,29 @@ class Model(rpickle.RPickler):
         model_str = "\n".join(lines)
         model = Model(model_str)
         return model
+
+    @classmethod
+    def iterateBiomodels(cls, start_num=1, num_model=1, is_runtimeerror=False):
+        """
+        Iteratively provides models for Biomodels. Invalid model
+        numbers are ignored. num_model is the total number of models attempted.
+
+        Parameters
+        ----------
+        start_num: int (number of the starting model)
+        num_model: int (number of models to provide)
+        is_runtimeerror: bool (detect runtime errors)
+        
+        Returns
+        -------
+        """
+        if is_runtimeerror:
+           exceptions = (RuntimeError, KeyError)
+        else:
+           exceptions = (KeyError)
+        for model_num in range(start_num, start_num + num_model):
+            try:
+                model = cls.getBiomodel(model_num)
+                yield model
+            except exceptions:
+                pass

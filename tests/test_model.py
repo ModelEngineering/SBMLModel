@@ -130,13 +130,26 @@ class TestModel(unittest.TestCase):
             new_model = rpickle.load(fd)
         self.assertTrue(model.isEqual(new_model))
 
-    def testGetBioModel(self):
+    def testGetBiomodel(self):
         if IGNORE_TEST:
             return
-        model = anl.Model.getBioModel(12)
+        model = anl.Model.getBiomodel(12)
         self.assertTrue("Model" in str(type(model)))
         self.assertGreater(len(model.species_names), 0)
 
+    def testIterateBiomodels(self):
+        if IGNORE_TEST:
+            return
+        def test(start_num, min_count):
+            count = 0
+            for model in anl.Model.iterateBiomodels(start_num=start_num, num_model=2):
+                count += 1
+                self.assertTrue("Model" in str(type(model)))
+            self.assertGreaterEqual(count, min_count)
+        #
+        test(1, 1)
+        test(2000, 0)
+        
 
 if __name__ == '__main__':
   unittest.main()

@@ -39,3 +39,4 @@ python to 3.9. ``sudo apt install python3.x-venv``. More details at [link](https
   * plotOneTS, plotManTS
   * Fixed Timeseries so that it handles computed values
   * Model.simulate can add noise to the result
+  * Iterate on BioModels
