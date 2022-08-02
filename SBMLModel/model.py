@@ -218,6 +218,24 @@ class Model(rpickle.RPickler):
         serializer = rpickle.Serializer(self)
         serializer.serialize()
         return serializer.deserialize()
+
+    # TODO: test
+    def calculateStds(self, *pargs, **kwargs):
+        """
+        Calculates the standard deviations of the species.
+        Parameters
+        ----------
+        pargs: list (positional arguments for simulation)
+        kwargs: list (keyward arguments for simulation)
+        
+        Returns
+        -------
+        pd.Series
+            index: str (species name)
+            value: float (std)
+        """
+        ts = self.simulate(*pargs, **kwargs)
+        return ts.std()
  
     def simulate(self, *pargs, noise_mag=0, **kwargs):
         """

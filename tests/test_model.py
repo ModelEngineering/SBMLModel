@@ -150,6 +150,12 @@ class TestModel(unittest.TestCase):
         #
         test(1, 1)
         test(2000, 0)
+
+    def testCalculateStds(self):
+        if IGNORE_TEST:
+            return
+        ser = self.model.calculateStds()
+        self.assertTrue(np.isclose(ser["A"], ser["B"]))
         
 
 if __name__ == '__main__':
