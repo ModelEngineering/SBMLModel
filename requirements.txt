@@ -2,7 +2,7 @@ coverage
 docstring-expander
 jupyterlab
 lmfit
-nose2
+nose
 numpy
 pandas
 pip>20
