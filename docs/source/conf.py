@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'analyzeSBML'
+project = 'SBMLModel'
 copyright = '2022, Joseph L Hellerstein'
 author = 'Joseph L Hellerstein'
 release = '0.0.1'
