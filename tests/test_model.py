@@ -142,7 +142,8 @@ class TestModel(unittest.TestCase):
             return
         def test(start_num, min_count):
             count = 0
-            for model in anl.Model.iterateBiomodels(start_num=start_num, num_model=2):
+            for num, model in \
+                  anl.Model.iterateBiomodels(start_num=start_num, num_model=2):
                 count += 1
                 self.assertTrue("Model" in str(type(model)))
             self.assertGreaterEqual(count, min_count)

@@ -268,7 +268,10 @@ class Model(rpickle.RPickler):
                 byte_lines = (myfile.readlines())
         lines = [l.decode() for l in byte_lines]
         model_str = "\n".join(lines)
-        model = Model(model_str, biomodel_num=model_num)
+        try:
+            model = Model(model_str, biomodel_num=model_num)
+        except RuntimeError:
+            model = None
         return model
 
     @classmethod
@@ -285,6 +288,8 @@ class Model(rpickle.RPickler):
         
         Returns
         -------
+        int: biomodel number
+        Model
         """
         if is_runtimeerror:
            exceptions = (RuntimeError, KeyError)
@@ -293,6 +298,6 @@ class Model(rpickle.RPickler):
         for model_num in range(start_num, start_num + num_model):
             try:
                 model = cls.getBiomodel(model_num)
-                yield model
+                yield model_num, model
             except exceptions:
                 pass

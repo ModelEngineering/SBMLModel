@@ -3,8 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to analyzeSBML's documentation!
-=======================================
+SBMLModel: A simple abstraction for simulation and analysis of SBML Models
+==========================================================================
+
+SBMLModel provides simple abtractions for doing simulation studies of individual
+SBML Models as well as collections of SBML Models.
+Some key features are:
+
+
 
 .. toctree::
    :maxdepth: 2
