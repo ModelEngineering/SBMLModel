@@ -1,8 +1,8 @@
-import analyzeSBML as ta
-import analyzeSBML.constants as cn
-from analyzeSBML import util
-from analyzeSBML.option_manager import OptionManager
-from analyzeSBML.options import Options
+import SBMLModel as ta
+import SBMLModel.constants as cn
+from SBMLModel import util
+from SBMLModel.option_manager import OptionManager
+from SBMLModel.options import Options
 
 from docstring_expander.expander import Expander
 import matplotlib.pyplot as plt

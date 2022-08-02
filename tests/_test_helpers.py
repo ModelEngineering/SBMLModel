@@ -8,7 +8,7 @@ Codes used in support of test modules.
 """
 
 
-from analyzeSBML.timeseries import Timeseries
+from SBMLModel.timeseries import Timeseries
 
 import os
 

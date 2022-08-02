@@ -1,6 +1,6 @@
-import analyzeSBML as ans
-from analyzeSBML.timeseries import Timeseries
-import analyzeSBML.constants as cn
+import SBMLModel as ans
+from SBMLModel.timeseries import Timeseries
+import SBMLModel.constants as cn
 
 import pandas as pd
 import numpy as np

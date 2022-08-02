@@ -4,7 +4,7 @@ Created on Oct 22, 2020
 @author: joseph-hellerstein
 """
 
-from analyzeSBML import rpickle
+from SBMLModel import rpickle
 
 import copy
 import os

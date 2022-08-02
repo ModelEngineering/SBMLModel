@@ -1,7 +1,7 @@
 """Manages options used in ControlSBML."""
 
-import analyzeSBML.constants as cn
-from analyzeSBML.options import Options
+import SBMLModel.constants as cn
+from SBMLModel.options import Options
 
 from docstring_expander.expander import Expander
 import matplotlib.pyplot as plt

@@ -1,8 +1,8 @@
-import analyzeSBML.constants as cn
-import analyzeSBML as anl
-import analyzeSBML.model as mdl
-from analyzeSBML import rpickle
-from analyzeSBML import util
+import SBMLModel.constants as cn
+import SBMLModel as anl
+import SBMLModel.model as mdl
+from SBMLModel import rpickle
+from SBMLModel import util
 
 import os
 import pandas as pd

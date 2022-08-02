@@ -1,4 +1,4 @@
-from analyzeSBML.options import Options
+from SBMLModel.options import Options
 
 import unittest
 

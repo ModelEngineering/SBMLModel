@@ -1,4 +1,4 @@
-from analyzeSBML.make_roadrunner import makeRoadrunner
+from SBMLModel.make_roadrunner import makeRoadrunner
 
 import os
 import unittest

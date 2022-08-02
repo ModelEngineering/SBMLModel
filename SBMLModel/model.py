@@ -22,12 +22,12 @@ Usage example:
         recovered_model = rpickle.load(fd)
 """
 
-import analyzeSBML.constants as cn
-from analyzeSBML import rpickle
-from analyzeSBML.make_roadrunner import makeRoadrunner
-from analyzeSBML.timeseries import Timeseries
-import analyzeSBML as anl
-from analyzeSBML import util
+import SBMLModel.constants as cn
+from SBMLModel import rpickle
+from SBMLModel.make_roadrunner import makeRoadrunner
+from SBMLModel.timeseries import Timeseries
+import SBMLModel as anl
+from SBMLModel import util
 
 import copy
 import lmfit

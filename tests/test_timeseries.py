@@ -1,5 +1,5 @@
-from analyzeSBML.timeseries import Timeseries, TimeseriesSer
-import analyzeSBML.constants as cn
+from SBMLModel.timeseries import Timeseries, TimeseriesSer
+import SBMLModel.constants as cn
 
 import numpy as np
 import os

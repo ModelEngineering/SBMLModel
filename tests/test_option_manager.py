@@ -1,5 +1,5 @@
-from analyzeSBML.option_manager import OptionManager
-import analyzeSBML.constants as cn
+from SBMLModel.option_manager import OptionManager
+import SBMLModel.constants as cn
 
 import matplotlib.pyplot as plt
 import numpy as np
