@@ -145,7 +145,8 @@ class TestModel(unittest.TestCase):
             for num, model in \
                   anl.Model.iterateBiomodels(start_num=start_num, num_model=2):
                 count += 1
-                self.assertTrue("Model" in str(type(model)))
+                if model is not None:
+                    self.assertTrue("Model" in str(type(model)))
             self.assertGreaterEqual(count, min_count)
         #
         test(1, 1)

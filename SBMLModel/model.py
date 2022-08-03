@@ -26,7 +26,7 @@ import SBMLModel.constants as cn
 from SBMLModel import rpickle
 from SBMLModel.make_roadrunner import makeRoadrunner
 from SBMLModel.timeseries import Timeseries
-import SBMLModel as anl
+import SBMLModel as mdl
 from SBMLModel import util
 
 import copy
@@ -219,7 +219,6 @@ class Model(rpickle.RPickler):
         serializer.serialize()
         return serializer.deserialize()
 
-    # TODO: test
     def calculateStds(self, *pargs, **kwargs):
         """
         Calculates the standard deviations of the species.
@@ -235,35 +234,48 @@ class Model(rpickle.RPickler):
             value: float (std)
         """
         ts = self.simulate(*pargs, **kwargs)
+        if ts is None:
+            return None
         return ts.std()
  
-    def simulate(self, *pargs, noise_mag=0, **kwargs):
+    def simulate(self, *pargs, noise_mag=0, std_ser=None, **kwargs):
         """
         Runs a simulation. Defaults to parameter values in the simulation.
  
         Parameters
         ----------
         noise_mag: positive float (max magnitude of noise added)
+        std_ser: pd.Series (standard deviations)
 
         Return
         ------
         Timeseries (or None if fail to converge)
         """
         noise_mag = np.abs(noise_mag)
+        data_ts = None
         self.roadrunner.reset()
-        data = self.roadrunner.simulate(*pargs)
-        columns = [c[1:-1] if c[0] =="[" else c for c in data.colnames]
-        data_ts = anl.Timeseries(data, columns=columns)
-        if noise_mag > 0:
-            nrow = len(data_ts)
-            ncol = len(data_ts.columns)
-            random_arr = np.random.rand(nrow*ncol)
-            random_arr = noise_mag*random_arr
-            random_arr = np.reshape(random_arr, (nrow, ncol))
-            random_df = pd.DataFrame(random_arr, columns=data_ts.columns,
-                index=data_ts.index)
-            data_df = pd.DataFrame(data_ts) + random_df
-            data_ts = Timeseries(data_df)
+        try:
+            data = self.roadrunner.simulate(*pargs)
+            is_done = True
+        except RuntimeError:
+            is_done = False
+        if is_done:
+            columns = [c[1:-1] if c[0] =="[" else c for c in data.colnames]
+            data_ts = mdl.Timeseries(data, columns=columns)
+            if noise_mag > 0:
+                nrow = len(data_ts)
+                ncol = len(data_ts.columns)
+                random_arr = np.random.rand(nrow*ncol)
+                random_arr += -0.5
+                random_arr = noise_mag*random_arr
+                random_arr = np.reshape(random_arr, (nrow, ncol))
+                random_df = pd.DataFrame(random_arr, columns=data_ts.columns,
+                    index=data_ts.index)
+                if std_ser is not None:
+                    for column in random_df.columns:
+                        random_df[column] = random_df[column]*std_ser.loc[column]
+                data_df = pd.DataFrame(data_ts) + random_df
+                data_ts = Timeseries(data_df)
         return data_ts
 
     @classmethod
@@ -286,10 +298,7 @@ class Model(rpickle.RPickler):
                 byte_lines = (myfile.readlines())
         lines = [l.decode() for l in byte_lines]
         model_str = "\n".join(lines)
-        try:
-            model = Model(model_str, biomodel_num=model_num)
-        except RuntimeError:
-            model = None
+        model = Model(model_str, biomodel_num=model_num)
         return model
 
     @classmethod
@@ -318,4 +327,4 @@ class Model(rpickle.RPickler):
                 model = cls.getBiomodel(model_num)
                 yield model_num, model
             except exceptions:
-                pass
+                yield model_num, None
