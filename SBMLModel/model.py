@@ -302,7 +302,7 @@ class Model(rpickle.RPickler):
         return model
 
     @classmethod
-    def iterateBiomodels(cls, start_num=1, num_model=1, is_runtimeerror=False):
+    def iterateBiomodels(cls, start_num=1, num_model=1, is_allerror=False):
         """
         Iteratively provides models for Biomodels. Invalid model
         numbers are ignored. num_model is the total number of models attempted.
@@ -311,15 +311,15 @@ class Model(rpickle.RPickler):
         ----------
         start_num: int (number of the starting model)
         num_model: int (number of models to provide)
-        is_runtimeerror: bool (detect runtime errors)
+        is_allerror: bool (catch all errors)
         
         Returns
         -------
         int: biomodel number
         Model
         """
-        if is_runtimeerror:
-           exceptions = (RuntimeError, KeyError)
+        if is_allerror:
+           exceptions = Exception
         else:
            exceptions = (KeyError)
         for model_num in range(start_num, start_num + num_model):
