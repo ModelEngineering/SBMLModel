@@ -48,8 +48,8 @@ CURRENT_TIME = "current_time"
 IS_DEBUG = True
 PREFIX = "BIOMD000000%04d.xml"
 BIOMODEL_EXCLUDE_PATH = os.path.join(cn.DATA_DIR, "biomodels_exclude.csv")
-df = pd.read_csv(BIOMODEL_EXCLUDE_PATH)
-EXCLUDE_BIOMODEL_DCT = df.to_dict()
+BIOMODEL_EXCLUDE_DF = pd.read_csv(BIOMODEL_EXCLUDE_PATH)
+MODEL_NUM = list(BIOMODEL_EXCLUDE_DF)[0]
 
 
 class Model(rpickle.RPickler):
@@ -294,7 +294,7 @@ class Model(rpickle.RPickler):
         -------
         Model
         """
-        if model_num in EXCLUDE_BIOMODEL_DCT.keys():
+        if model_num in BIOMODEL_EXCLUDE_DF[MODEL_NUM].values:
             return None
         ffile = PREFIX % model_num
         archive_path = os.path.join(cn.DATA_DIR, "biomodels.zip")
