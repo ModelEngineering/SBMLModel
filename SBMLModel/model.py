@@ -299,11 +299,17 @@ class Model(rpickle.RPickler):
         ffile = PREFIX % model_num
         archive_path = os.path.join(cn.DATA_DIR, "biomodels.zip")
         with zipfile.ZipFile(archive_path) as myzip:
-            with myzip.open(ffile) as myfile:
-                byte_lines = (myfile.readlines())
-        lines = [l.decode() for l in byte_lines]
-        model_str = "\n".join(lines)
-        model = Model(model_str, biomodel_num=model_num)
+            try:
+                with myzip.open(ffile) as myfile:
+                    byte_lines = (myfile.readlines())
+            except KeyError:
+                    byte_lines = []
+        if len(byte_lines) > 0:
+            lines = [l.decode() for l in byte_lines]
+            model_str = "\n".join(lines)
+            model = Model(model_str, biomodel_num=model_num)
+        else:
+            model = None
         return model
 
     @classmethod
