@@ -77,8 +77,8 @@ class Model(rpickle.RPickler):
         """
         if model_reference is not None:
             self.biomodel_num = biomodel_num
-            self.model_reference = model_reference  # MODEL_REFERENCE
-            self.roadrunner = makeRoadrunner(self.model_reference)  # MODEL_REFERENCE
+            self.model_reference = model_reference
+            self.roadrunner = makeRoadrunner(self.model_reference)
             self.deserialization_dct = None
             self._initialize()
         else:

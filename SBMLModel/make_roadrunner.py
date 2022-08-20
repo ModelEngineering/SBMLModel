@@ -43,5 +43,14 @@ def makeRoadrunner(model_reference):
             return te.loada(model_reference)
     else:
         if XML in model_reference[0:10]:
-            return te.loads(model_reference)
+            try:
+                return te.loads(model_reference)
+            except RuntimeError:
+                idx = model_reference.find("BIOMD")
+                if idx < 0:
+                    model_descriptor = model_reference
+                else:
+                    model_descriptor = model_reference[idx:idx+15]
+                raise ValueError("Cannot create model %s"
+                      % model_descriptor)
         return te.loada(model_reference)
