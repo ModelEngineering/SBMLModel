@@ -34,7 +34,6 @@ import lmfit
 import numpy as np
 import os
 import pandas as pd
-import tellurium as te
 import typing
 import zipfile
 
@@ -151,6 +150,7 @@ class Model(rpickle.RPickler):
         Provides a hook to modify instance variables after they have
         been initialized by RPickle.
         """
+        import tellurium as te
         deserialization_dct = dict(self.deserialization_dct)  # DESERIALIZAITON_DCT
         self.roadrunner = te.loada(self.antimony)
         self._initialize()

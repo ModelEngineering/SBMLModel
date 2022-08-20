@@ -1,6 +1,5 @@
 """Creates a Roadrunner instance from a model reference."""
 
-import tellurium as te
 
 ANT = "ant"
 XML = "xml"
@@ -23,6 +22,7 @@ def makeRoadrunner(model_reference):
     -------
     ExtendedRoadrunner object
     """
+    import tellurium as te
     if "RoadRunner" in str(type(model_reference)):
         return model_reference
     #
