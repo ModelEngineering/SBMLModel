@@ -46,6 +46,7 @@ def makeRoadrunner(model_reference):
             try:
                 return te.loads(model_reference)
             except RuntimeError:
+                # Describe exception
                 idx = model_reference.find("BIOMD")
                 if idx < 0:
                     model_descriptor = model_reference
