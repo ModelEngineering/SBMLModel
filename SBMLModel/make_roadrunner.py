@@ -43,5 +43,8 @@ def makeRoadrunner(model_reference):
             return te.loada(model_reference)
     else:
         if XML in model_reference[0:10]:
-            return te.loads(model_reference)
+            try:
+              return te.loads(model_reference)
+            except Exception:
+                raise ValueError("Cannot create model")
         return te.loada(model_reference)
