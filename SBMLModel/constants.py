@@ -150,4 +150,4 @@ for kwargs in [SIM_KWARGS, PLOT_KWARGS, FIG_KWARGS]:
 # TimeSeries
 MS_IN_SEC = 1000
 SEC_IN_MS = 1.0/MS_IN_SEC
-TIMESERIES_INDEX_NAME = "miliseconds"
+TIMESERIES_INDEX_NAME = "milliseconds"

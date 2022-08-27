@@ -1,6 +1,5 @@
 """Creates a Roadrunner instance from a model reference."""
 
-import tellurium as te
 
 ANT = "ant"
 XML = "xml"
@@ -23,6 +22,7 @@ def makeRoadrunner(model_reference):
     -------
     ExtendedRoadrunner object
     """
+    import tellurium as te
     if "RoadRunner" in str(type(model_reference)):
         return model_reference
     #
@@ -44,7 +44,14 @@ def makeRoadrunner(model_reference):
     else:
         if XML in model_reference[0:10]:
             try:
-              return te.loads(model_reference)
-            except Exception:
-                raise ValueError("Cannot create model")
+                return te.loads(model_reference)
+            except RuntimeError:
+                # Describe exception
+                idx = model_reference.find("BIOMD")
+                if idx < 0:
+                    model_descriptor = model_reference
+                else:
+                    model_descriptor = model_reference[idx:idx+15]
+                raise ValueError("Cannot create model %s"
+                      % model_descriptor)
         return te.loada(model_reference)

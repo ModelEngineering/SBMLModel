@@ -34,7 +34,6 @@ import lmfit
 import numpy as np
 import os
 import pandas as pd
-import tellurium as te
 import typing
 import zipfile
 
@@ -47,6 +46,9 @@ DESERIALIZATION_DCT = "deserialization_dct"
 CURRENT_TIME = "current_time"
 IS_DEBUG = True
 PREFIX = "BIOMD000000%04d.xml"
+BIOMODEL_EXCLUDE_PATH = os.path.join(cn.DATA_DIR, "biomodels_exclude.csv")
+BIOMODEL_EXCLUDE_DF = pd.read_csv(BIOMODEL_EXCLUDE_PATH)
+MODEL_NUM = list(BIOMODEL_EXCLUDE_DF)[0]
 
 
 class Model(rpickle.RPickler):
@@ -74,8 +76,8 @@ class Model(rpickle.RPickler):
         """
         if model_reference is not None:
             self.biomodel_num = biomodel_num
-            self.model_reference = model_reference  # MODEL_REFERENCE
-            self.roadrunner = makeRoadrunner(self.model_reference)  # MODEL_REFERENCE
+            self.model_reference = model_reference
+            self.roadrunner = makeRoadrunner(self.model_reference)
             self.deserialization_dct = None
             self._initialize()
         else:
@@ -148,6 +150,7 @@ class Model(rpickle.RPickler):
         Provides a hook to modify instance variables after they have
         been initialized by RPickle.
         """
+        import tellurium as te
         deserialization_dct = dict(self.deserialization_dct)  # DESERIALIZAITON_DCT
         self.roadrunner = te.loada(self.antimony)
         self._initialize()
@@ -291,14 +294,22 @@ class Model(rpickle.RPickler):
         -------
         Model
         """
+        if model_num in BIOMODEL_EXCLUDE_DF[MODEL_NUM].values:
+            return None
         ffile = PREFIX % model_num
         archive_path = os.path.join(cn.DATA_DIR, "biomodels.zip")
         with zipfile.ZipFile(archive_path) as myzip:
-            with myzip.open(ffile) as myfile:
-                byte_lines = (myfile.readlines())
-        lines = [l.decode() for l in byte_lines]
-        model_str = "\n".join(lines)
-        model = Model(model_str, biomodel_num=model_num)
+            try:
+                with myzip.open(ffile) as myfile:
+                    byte_lines = (myfile.readlines())
+            except KeyError:
+                    byte_lines = []
+        if len(byte_lines) > 0:
+            lines = [l.decode() for l in byte_lines]
+            model_str = "\n".join(lines)
+            model = Model(model_str, biomodel_num=model_num)
+        else:
+            model = None
         return model
 
     @classmethod

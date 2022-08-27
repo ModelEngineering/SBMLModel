@@ -111,8 +111,9 @@ class OptionManager(object):
              cn.PLOT_DCT.items()}
         ax  = new_kwargs[cn.O_AX]
         if ax is None:
-             _, ax  = plt.subplots(1)
-             new_kwargs[cn.O_AX]  = ax
+            import pdb; pdb.set_trace()
+            _, ax  = plt.subplots(1)
+            new_kwargs[cn.O_AX]  = ax
         if new_kwargs[cn.O_LEGEND_SPEC] is not None:
             legend_spec = new_kwargs[cn.O_LEGEND_SPEC]
             ax.legend(legend_spec.names,
