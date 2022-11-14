@@ -1,4 +1,4 @@
-deactivate
-source mdl/bin/activate
-PYTHONPATH=`pwd`
+#!/bin/bash
+PYTHONPATH=${PYTHONPATH}:`pwd`
 export PYTHONPATH
+source fpp/bin/activate
