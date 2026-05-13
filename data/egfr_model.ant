@@ -1,0 +1,433 @@
+// Simple EGFR-ERK model with Shp2 as releasing phosphatase - modification 1
+// Started 05/04/2026; edited 5-11-26
+
+// --------------------------------------------------------------------
+
+// Created by libAntimony v2.8.1
+
+model EGFR_ERK_combined()
+
+// Compartments:
+compartment cell, extra, intra;
+
+// --------------------------------------------------------------------
+
+//Species
+
+// EGFR
+species Egfr in cell
+species iEgfr in intra
+species Egfr_Lig in cell
+species iEgfr_Lig in intra
+species pEgfr_Lig in cell
+species ipEgfr_Lig in intra
+
+// Shp2
+species Shp2 in cell
+species pShp2 in cell
+species aR_Shp2 in cell
+species aR_pShp2 in cell
+species pShp2_pGab1_Grb2_SOS1 in cell
+species pShp2_pGab1_Grb2  in cell
+
+// GAB
+species Gab1 in cell
+species Grb2_Gab1 in cell
+species Grb2_pGab1 in cell
+species Gab1_Grb2_SOS1 in cell
+species aR_Gab1_Grb2_SOS1 in cell
+species aR_pGab1_Grb2_SOS1 in cell
+species pGab1_Grb2_SOS1 in cell
+
+// SHC
+species Shc1 in cell
+species aR_Shc1 in cell
+species aR_pShc1 in cell
+species pShc1 in cell
+species pShc1_Grb2_SOS1 in cell
+
+// SOS
+species SOS1 in cell
+species Grb2_SOS1 in cell
+species Act_Grb2_SOS1 in cell
+species iAct_Grb2_SOS1 in intra
+
+// Other
+species Ras in cell
+species aRas in cell // activated ras
+species Grb2 in cell
+species Rasa1 in cell
+
+// Erk cascade
+species FTT in cell // generic 14-3-3 proteins
+species BRAF in cell // monomeric BRAF
+species iBRAF in cell // complex of doubly phosphorylated BRAF with FTT
+species piBRAF in cell // inactivate BRAF from feedback phosphorylation
+species iBRAF_Mek in cell // complex of inactivated BRAF with Mek
+species aRas_iBRAF_Mek in cell // complex of inactivated BRAF-Mek with activated Ras
+species aRas_iBRAF_Mek_prime in cell // complex of inactivated BRAF-Mek with activated Ras, dephosphorylated at S365
+species aRas_piBRAF_Mek_prime2 in cell // inactivation of membrane bound BRAF by phosphorylation
+species aRas_iBRAF_Mek_prime2 in cell // complex of inactivated BRAF-Mek with activated Ras, dephosphorylated at S365 with dissociated FTT protein
+species aRas_dBRAF_Mek in cell // dimerized BRAF
+species aRas_aBRAF_Mek in cell //
+species aBRAF_Mek in cell // dimeric complex of BRAF with Mek and FTT protein
+species aBRAF_pMek in cell // phosphorylated Mek in complex with aBRAF
+species aBRAF in cell // activated BRAF without MEK attached
+species Mek in cell // monomeric
+species Erk in cell // – monomeric
+species pMek in cell // single phosphorylation
+species pMek_Erk in cell // pMek-Erk complex
+species pMek_pYErk in cell // First phosphorylation of Erk - still in complex
+species pYErk in cell // Singly phosphorylated Erk
+species pTErk in cell // – single phosphorylation alernate site
+species pTpYErk in cell // – double phosphorylation, active Erk
+species pSOS1 in cell // feedback inactivated Sos
+species RSK in cell // Rsk1
+species pErk_RSK in cell // complex of pTpYErk and Rsk1
+species pRSK in cell // activated Rsk1
+
+
+// Reporter Species
+species LRsTot in cell
+species pEGFRtot in cell
+species sEGFRtot in cell
+species iEGFRtot in cell
+species pGAB1tot in cell
+species pSHC1tot in cell
+species pShp2tot in cell
+species total_SOS in cell
+species BRAFtot in cell
+species pBRAFtot in cell
+species aBRAFtot in cell
+species pMEKtot in cell
+species paMEKtot in cell
+species pERKtot in cell
+species pYERKtot in cell
+species aRAStot in cell
+species TauEGFR in cell
+species TauGab1 in cell
+species TauShc1 in cell
+species TauSosGab1 in cell
+species TauSosShc1 in cell
+species TauBraf in cell
+
+// --------------------------------------------------------------------
+
+// Reactions:
+
+//EGFR
+R1: => Egfr; Vr; //New Receptors
+R2: Egfr => iEgfr; kt * Egfr; //Receptor constitutive internalization
+R3: iEgfr => ; kx * iEgfr; //Internalized receptor Degradation
+R4: Egfr -> Egfr_Lig; kf * Egfr * Lig - kr * Egfr_Lig; //Ligand_binding
+R5: Egfr_Lig => iEgfr_Lig; ke * Egfr_Lig; //Receptor ligand endocytosis
+R6: iEgfr_Lig => ; kh * iEgfr_Lig; //Internalized receptor Complex Degradation
+R7: Egfr_Lig -> pEgfr_Lig; kp1 * Egfr_Lig - k_p1 * pEgfr_Lig; //Receptor Phosphorylation
+R8: pEgfr_Lig => ipEgfr_Lig; ke * pEgfr_Lig; //Phosphorylated Receptor Endocytosis
+R9: ipEgfr_Lig => ; kh * ipEgfr_Lig; //Phosphorylated internalized Receptor Complex Degradation
+
+// GAB module
+R10: Gab1 + Grb2 -> Grb2_Gab1; k4 * Gab1 * Grb2 - k_4 * Grb2_Gab1 // Reversible binding of Grb2 to Gab1
+R11: Grb2_Gab1 + Grb2_SOS1 -> Gab1_Grb2_SOS1; k16 * Grb2_Gab1 * Grb2_SOS1 - k_16 * Gab1_Grb2_SOS1 // Reversible binding of Grb2-Gab1 to Grb2-SOS1
+R12: pEgfr_Lig + Gab1_Grb2_SOS1 -> aR_Gab1_Grb2_SOS1 ; k5 * pEgfr_Lig * Gab1_Grb2_SOS1 - k_5 * aR_Gab1_Grb2_SOS1  // Binding to Grb2-SOS1-Gab1 to EGFR
+R13: aR_Gab1_Grb2_SOS1 => aR_pGab1_Grb2_SOS1 ; kp3 * aR_Gab1_Grb2_SOS1 // Phosphorylation of Gab1_Grb2_SOS1
+R14: aR_pGab1_Grb2_SOS1 => pGab1_Grb2_SOS1 + pEgfr_Lig; k_12 * aR_pGab1_Grb2_SOS1 // Release of pGab1-Grb2-SOS1 from the EGFR
+R15: pEgfr_Lig + Shp2 -> aR_Shp2;  k7 * pEgfr_Lig * Shp2 - k_7 * aR_Shp2 // Binding of Shp2 to the EGFR
+R16: aR_Shp2 => aR_pShp2; kp5 * aR_Shp2 // Shp2 phosphorylation
+R17: aR_pShp2 => pEgfr_Lig + pShp2; k_7a * aR_pShp2 // EGFR-pShp2 dissociation
+R18: pGab1_Grb2_SOS1+ pShp2 -> pShp2_pGab1_Grb2_SOS1; k11 * pGab1_Grb2_SOS1 * pShp2  - k_11 * pShp2_pGab1_Grb2_SOS1 // Binding of pShp2 to pGab1_Grb2_SOS1
+R19: pShp2_pGab1_Grb2_SOS1 => Act_Grb2_SOS1 + pShp2_pGab1_Grb2; k_13 * pShp2_pGab1_Grb2_SOS1 // Release and activation of Grb2-SOS1
+R20: pShp2_pGab1_Grb2 => pShp2 + Grb2_pGab1; k_15 * pShp2_pGab1_Grb2  // Dissociation of pShp2 from pGab1-Grb2
+R21: pShp2 => Shp2; k_p5 * pShp2 * pShp2 // pShp2 dephosphorylation
+R22: Grb2_pGab1 => Grb2_Gab1; k_p3 * Grb2_pGab1 // Dephosphorylation of pGab1-Grb2
+
+// Shc1 module
+R23: pEgfr_Lig + Shc1 -> aR_Shc1; k6 * pEgfr_Lig * Shc1 - k_6 * aR_Shc1 // SHC1 activated EGFR association
+R24: aR_Shc1 => aR_pShc1; kp4 * aR_Shc1  // SHC1 phosphorylation
+R25: aR_pShc1 => pEgfr_Lig + pShc1; k_6a * aR_pShc1  // pSHC1 dissociation
+R26: pShc1 => Shc1; k_p4 * pShc1 // pSHC1 dephosphorylation
+R27: pShc1 + Grb2_SOS1 -> pShc1_Grb2_SOS1; k10 *  pShc1 * Grb2_SOS1 - k_10 * pShc1_Grb2_SOS1 // Grb2_SOS1 Shc1 binding
+R28: pShc1_Grb2_SOS1 => pShc1 + Act_Grb2_SOS1; k19 *  pShc1_Grb2_SOS1 // Grb2_SOS1 activation
+
+// SOS1 module
+R29: Act_Grb2_SOS1 + Ras => Act_Grb2_SOS1 + aRas; k17 * Act_Grb2_SOS1 * Ras // Activation by Grb2_SOS1
+R30: aRas + Rasa1 => Ras + Rasa1; k18 * aRas * Rasa1 // Deactivation of Rasa1
+R31: Grb2 + SOS1 -> Grb2_SOS1; k8 * Grb2 * SOS1 - k_8 * Grb2_SOS1 // Grb2_SOS1 binding
+R32: Act_Grb2_SOS1 => iAct_Grb2_SOS1; ke * Act_Grb2_SOS1 // Inhibition by endocytosis
+R33: iAct_Grb2_SOS1 => Grb2_SOS1; kr1 * iAct_Grb2_SOS1 // Recycling of the internalized complexes
+
+// Raf module
+R34: BRAF + FTT -> iBRAF; k20 * BRAF * FTT - k_20 * iBRAF // Formation of BRAF 14-3-3 protein complex
+R35: iBRAF + Mek -> iBRAF_Mek; k21 * iBRAF * Mek - k_21 * iBRAF_Mek // Binding of inactivated BRAF to Mek
+R36: iBRAF_Mek + aRas-> aRas_iBRAF_Mek ; k22 * iBRAF_Mek * aRas - k_22 * aRas_iBRAF_Mek // Binding of BRAF-Mek complex to activated Ras
+R37: aRas_iBRAF_Mek => aRas_iBRAF_Mek_prime; k_p6 * aRas_iBRAF_Mek // Dephosphorylation of pS365 by SMP
+R38: aRas_iBRAF_Mek_prime => aRas_iBRAF_Mek; kp6 * aRas_iBRAF_Mek_prime // Phosphorylation of S365 by unknown kinase
+R39: aRas_iBRAF_Mek_prime -> aRas_iBRAF_Mek_prime2 + FTT; k_23 * aRas_iBRAF_Mek_prime - k23*  aRas_iBRAF_Mek_prime2 * FTT // Dissociation of 14-3-3 from aRas-BRAF complex
+R40: aRas_iBRAF_Mek_prime2 + aRas_iBRAF_Mek_prime2 -> aRas_dBRAF_Mek; k24 * aRas_iBRAF_Mek_prime2 * aRas_iBRAF_Mek_prime2 - k_24* aRas_dBRAF_Mek // Dimerization of aRas-BRAF complexes
+R41: aRas_dBRAF_Mek  + FTT -> aRas_aBRAF_Mek; k25 * aRas_dBRAF_Mek * FTT - k_25 * aRas_aBRAF_Mek // Stabilization of dimerized BRAF 
+R42: aRas_aBRAF_Mek => aRas + aBRAF_Mek; k_26 * aRas_aBRAF_Mek // Dissociation of activated Raf from aRas
+R43: aBRAF_Mek => aBRAF_pMek; kp7 * aBRAF_Mek // Phosphorylation of Mek by activated BRAF
+R44: aBRAF_pMek => aBRAF + 2 pMek; k_27 * aBRAF_pMek // Dissociation of pMek from aBRAF_pMek complex
+R45: pMek => Mek; k_p7* pMek // Dephosphosphorylation of phospho-Mek
+R46: aBRAF => 2 BRAF + FTT; k_28 * aBRAF // Inactivation of activated BRAF
+R47: aBRAF + 2 Mek -> aBRAF_Mek; k29 * aBRAF * Mek * Mek - k_29 * aBRAF_Mek // Reformation of complex of aRaf and Mek
+R48: pMek + Erk -> pMek_Erk; k30 * pMek * Erk - k_30 * pMek_Erk // Binding of Erk to pMek
+R49: pMek_Erk => pMek_pYErk; kp8 * pMek_Erk // Phosphorylation of pY-Erk by pMek
+R50: pMek_pYErk => pTpYErk + pMek; kp9 * pMek_pYErk // Phosphorylation of pT-Erk by pMek
+R51: pYErk + pMek => pTpYErk + pMek; kp10 * pMek * pYErk // Phosphorylation of free pY-Erk by pMek
+R52: pTErk + pMek => pTpYErk + pMek; kp11 * pMek * pTErk // Phosphorylation of free pT-Erk by pMek
+R53: pTpYErk => pYErk; k_p8 * pTpYErk // Dephosphorylation of pTpY-Erk to pY-Erk
+R54: pTpYErk => pTErk; k_p9 * pTpYErk // Dephosphorylation of pTpY-Erk to pT-Erk
+R55: pYErk => Erk; k_p10 * pYErk // Dephosphorylation of pY-Erk to Erk
+R56: pTErk => Erk; k_p11 * pTErk // Dephosphorylation of pT-Erk to Erk
+
+// Rsk module
+R57: pTpYErk + RSK -> pErk_RSK; k31 * pTpYErk * RSK - k_31 * pErk_RSK // Formation of the activated Erk-Rsk complex
+R58: pErk_RSK => pTpYErk + pRSK; kp14 * pErk_RSK // Phosphorylation and release of pRSK
+R59: pRSK => RSK; k_p14 * pRSK // Dephosphorylation of phospho-RSK
+
+// Feedback
+R60: iBRAF + pTpYErk => piBRAF + pTpYErk; kp12 * iBRAF * pTpYErk // Inactivation of iBRAF by negative feedback
+R61: piBRAF => iBRAF; k_p12 * piBRAF // Reactivation of inactivated iBRAF
+R62: aRas_iBRAF_Mek_prime2 + pTpYErk => aRas_piBRAF_Mek_prime2 + pTpYErk; kp13 * aRas_iBRAF_Mek_prime2 * pTpYErk  // Blocking dimerization of BRAF
+R63: aRas_piBRAF_Mek_prime2 => aRas_iBRAF_Mek_prime2; k_p13 * aRas_piBRAF_Mek_prime2 // Reactivation of membrane bound BRAF
+R64: Grb2_SOS1 + pRSK => pSOS1 + Grb2 + pRSK; kp15 * Grb2_SOS1 * pRSK // Inactivation of SOS
+R65: pSOS1 => SOS1; k_p15 * pSOS1 // Reactivation of Grb2_SOS1
+
+// Reporter species
+LRsTot := Egfr_Lig + pEgfr_Lig + aR_Gab1_Grb2_SOS1 + aR_pGab1_Grb2_SOS1 + aR_Shp2 + aR_pShp2 + aR_Shc1 + aR_pShc1
+sEGFRtot := Egfr + Egfr_Lig + pEgfr_Lig + aR_Gab1_Grb2_SOS1  + aR_pGab1_Grb2_SOS1 + aR_Shp2 + aR_pShp2 + aR_Shc1 + aR_pShc1
+iEGFRtot := iEgfr_Lig + ipEgfr_Lig
+pEGFRtot := pEgfr_Lig + aR_Gab1_Grb2_SOS1  + aR_pGab1_Grb2_SOS1 + aR_Shp2 + aR_pShp2 + aR_Shc1 + aR_pShc1
+pShp2tot := pShp2 + pShp2_pGab1_Grb2_SOS1 + pShp2_pGab1_Grb2
+pGAB1tot := Grb2_pGab1 + aR_pGab1_Grb2_SOS1 + pGab1_Grb2_SOS1 + pShp2_pGab1_Grb2_SOS1 + pShp2_pGab1_Grb2
+pSHC1tot := aR_pShc1 + pShc1 + pShc1_Grb2_SOS1
+total_SOS := SOS1 + pSOS1 + Grb2_SOS1 + Act_Grb2_SOS1 + iAct_Grb2_SOS1 + pShp2_pGab1_Grb2_SOS1 + pGab1_Grb2_SOS1 + Gab1_Grb2_SOS1 + aR_Gab1_Grb2_SOS1 + aR_pGab1_Grb2_SOS1 + pShc1_Grb2_SOS1
+BRAFtot := BRAF + iBRAF + piBRAF + iBRAF_Mek + aRas_iBRAF_Mek + aRas_iBRAF_Mek_prime + aRas_piBRAF_Mek_prime2 + aRas_iBRAF_Mek_prime2 + (2 * aRas_dBRAF_Mek) + (2 * aRas_aBRAF_Mek) + (2 * aBRAF_Mek ) + (2 * aBRAF_pMek) + (2 * aBRAF)
+pBRAFtot := iBRAF + iBRAF_Mek + aRas_iBRAF_Mek + piBRAF
+aBRAFtot := aRas_iBRAF_Mek_prime + aRas_iBRAF_Mek_prime2 + aRas_dBRAF_Mek + aRas_aBRAF_Mek + aBRAF_Mek + aBRAF_pMek + aBRAF + piBRAF + aRas_piBRAF_Mek_prime2
+pMEKtot := aBRAF_pMek + pMek + pMek_Erk + pMek_pYErk
+paMEKtot := pMek + pMek_Erk + pMek_pYErk
+pERKtot := pMek_pYErk + pTpYErk + pYErk + pTErk
+pYERKtot := pYErk + pMek_pYErk + pTpYErk 
+aRAStot := aRas + aRas_iBRAF_Mek + aRas_iBRAF_Mek_prime + aRas_piBRAF_Mek_prime2 + aRas_iBRAF_Mek_prime2 + aRas_dBRAF_Mek + aRas_aBRAF_Mek
+TauEGFR := 1/ kr + kf * (Egfr + Lig)
+TauGab1 := 1/ k_5 + k5 * (pEgfr_Lig + Grb2_Gab1)
+TauShc1 := 1/ k_6 + k6 * (pEgfr_Lig + Shc1)
+// TauSosGab1 := 1/ k_9 + k9 * (Grb2_pGab1 + Grb2_SOS1)
+TauSosShc1 := 1/ k_10 + k10 * (pShc1 + Grb2_SOS1)
+TauBraf := 1/ k_22 + k22 * (iBRAF_Mek + aRas)
+
+// --------------------------------------------------------------------
+
+// Initial Values:
+
+
+// all species has nM units
+
+// EGFR
+
+// fix Lig
+$Lig = 0.165;
+Egfr = 135;
+iEgfr = .17;
+Egfr_Lig = 0.2;
+iEgfr_Lig = 0;
+pEgfr_Lig = 0.02;
+ipEgfr_Lig = 0.0;
+
+// Shp2
+Shp2 = 27.5;
+pShp2 = 0.045;
+aR_Shp2 = 0;
+aR_pShp2 = 0;
+pShp2_pGab1_Grb2_SOS1 = 0; 
+pShp2_pGab1_Grb2 = 0;
+
+// GAB
+Gab1 = 2.1
+Grb2_Gab1 = 2.8
+Grb2_pGab1 = 0.0
+Gab1_Grb2_SOS1 = 0;
+aR_Gab1_Grb2_SOS1 = 0;
+aR_pGab1_Grb2_SOS1 = 0;
+pGab1_Grb2_SOS1 = 0;
+
+// SHC
+Shc1 = 27.3
+aR_Shc1 = 0.053
+aR_pShc1 = 0.02
+pShc1 = 0.02
+pShc1_Grb2_SOS1 = 0;
+
+// SOS
+SOS1 = 0.13
+pSOS1 = 0
+Grb2_SOS1 = 3.2
+Act_Grb2_SOS1 = 0.22
+iAct_Grb2_SOS1 = 0.12
+
+// RAF-ERK cascade
+
+FTT = 1080;
+BRAF = 15;
+iBRAF = 0
+piBRAF = 0
+iBRAF_Mek = 0
+aRas_iBRAF_Mek = 0
+aRas_iBRAF_Mek_prime = 0
+aRas_iBRAF_Mek_prime2 = 0
+aRas_piBRAF_Mek_prime2 = 0
+aRas_dBRAF_Mek = 0
+aRas_aBRAF_Mek = 0
+aBRAF_Mek = 0
+aBRAF_pMek = 0
+aBRAF = 0
+Mek = 104
+pMek = 0
+pMek_Erk = 0
+pMek_pYErk = 0
+pYErk = 0
+pTErk = 0
+pTpYErk = 0
+Erk = 153 
+pErk = 0
+ppErk = 0
+
+
+// Other
+Ras = 95.2
+aRas = 3.8
+Grb2 = 39
+Rasa1 = 98.0
+RSK = 43.2
+pRSK = 0
+pErk_RSK = 0;
+
+// --------------------------------------------------------------------
+
+// Compartment initializations:
+
+cell = 1;
+extra = 5000;
+intra = 1;
+
+// --------------------------------------------------------------------
+
+// Parameters:
+
+Vr = 0.176; // Rate of new EGFR appearing at cell surface
+kt = 0.0013; // Turnover rate constant for empty EGFR
+kx = 1.00E+00; // Internalized empty receptor degradation rate constant
+kf = 1.54E-02; // Forward rate constant for Lig-EGFR binding
+kr = 5.60E-03; // Reverse rate constant for Lig-EGFR dissociation
+ke = 1.30E-03; // Endocytic rate constant for Lig-EGFR
+kh = 5.60E-04; // Degradation rate constant for internalized Lig-EGFR
+kp1 = 9.00E-03 // Phosphorylation rate constant for active EGFR
+k_p1 = 7.00E-02; // Dephosphorylation rate constant for PY EGFR
+
+kp3 = 2.26E-02 // Phosphorylation rate constant for EGFR substrate Gab1
+k_p3 = 5.80E-03; // Dephosphorylation rate constant for PY Gab1
+
+kp4 = 7.48E-01 // Phosphorylation rate constant for EGFR substrate Shc1
+k_p4 = 2.30E-02; // Dephosphorylation rate constant for PY Shc1
+
+kp5 = 1.27E-01 // Phosphorylation rate constant for EGFR substrate PTPN11
+k_p5 = 2.00E-02 // Dephosphorylation rate constant for PY PTPN11
+
+k4 = 1.50E-03; // Forward rate constant for Gab1_Grb2 binding
+k_4 = 2.88E-02; // Reverse rate constant for Gab1_Grb2 dissociation
+
+k5 = 2.96E-01 // Forward rate constant for Grb2_SOS1-Gab1 binding to phosphorylated EGFR
+k_5 = 6.49E-01; // Reverse rate constant for Grb2_SOS1-Gab1 dissociating from phosphorylated EGFR
+k_12 = 1.31E+00 // Reverse rate constant for pGab1_Grb2 dissociating from phosphorylated EGFR
+
+k6 = 2.40E-03 // Forward rate constant for Shc1 binding to phosphorylated EGFR
+k_6 = 1.36E+00; // Reverse rate constant for Shc1 dissociating from phosphorylated EGFR
+k_6a = 2.40E-01 // Reverse rate constant for Shc1 dissociating from phosphorylated EGFR
+
+k7 = 1.05E-01 // Forward rate constant for Shp2 binding to phosphorylated EGFR
+k_7 = 1.89E+00 // Reverse rate constant for Shp2 binding to phosphorylated EGFR
+k_7a = 3.65E-02 // Rate constant for pShp2 dissociating from phosphorylated EGFR
+
+k11 = 2.38E-01; // Forward rate constant for pShp2 to pGab1_Grb2_SOS1 binding
+k_11 = 1.70E-01; // Reverse rate constant for pShp2_pGab1_Grb2_SOS1 dissociation
+k16 = 1.06E-02; // Forward rate constant of Grb2-Gab1 to Grb2_SOS1 binding
+k_16 = 2.51E-02; // Reverse rate constant of Grb2_SOS1-Gab1 dissociation
+k_15 = 5.00E-05 // Dissociation of pShp2 from pGab1_Grb2
+k_13 = 3.02E-01; // Release and activation of Grb2_SOS1 from pShp2 complex
+
+k8 = 1.00E-04; // Forward rate constant for Grb2 - SOS1 binding
+k_8 = 1.40E-04; // Reverse rate constant for Grb2_SOS1 dissociation
+
+k10 = 2.60E-03 // Forward rate constant for Grb2_SOS1 Shc1 binding
+k_10 = 1.68E-01 // Reverse rate constant for Grb2_SOS1 Shc1 binding
+
+k17 = 6.20E-01 // Activation of Ras by SOS-adaptor complexes
+k18 = 5.00E-02 // Deactivation rate constant of active Ras by RASA1
+
+k19 = 0.3517930515482942 // Activation of pShc1_Grb2-SOS complex
+kr1 = 0.01 // Recycling of the internalized Grb2-SOS complexes
+
+k20 = 5.00E-04 // Association rate constant of 14-3-3 proteins with BRAF
+k_20 = 4.00E-03 // Dissociation rate constant of 14-3-3 proteins with BRAF
+k21 = 2e-3 // Binding of inactivated BRAF to Mek
+k_21 = 3e-2 // Dissociation of inactivated BRAF from BRAF-MEK complex
+k22 = 3E-3 // Binding of BRAF-Mek complex to activated Ras
+k_22 = 4E-1 // Dissociation of BRAF-Mek complex from activated Ras
+k_p6 = 4.70E-02 // Dephosphorylation of pS365 by SMP
+kp6 = 3.60E-02 // Phosphorylation of S365 by unknown kinase
+k23 = 1.00E-03 // Dissociation of 1433 from aRas-BRAF complex
+k_23 = 6.00E-01 // Association of 1433 to aRas-BRAF complex
+k24 = 4.00E-02 // Dimerization of aRas-BRAF complexes
+k_24 = 5.00E-02 // De-Dimerization of aRas-BRAF complexes
+k25 = 1.00E-01 // Stabilization of dimerized BRAF 
+k_25 = 1.00E-03 // Destabilization of dimerized BRAF 
+k_26 = 1.16e-1 // Dissociation of activated Raf from aRas
+kp7 = 2.6e-1 // Phosphorylation of Mek by activated BRAF
+k_p7 = 3.3e-2 // Dephosphorylation of Mek
+k_27 = 5e-1 // Dissociation of pMek from aBRAF_pMek complex
+k_28 = 5 // Inactivation of activated BRAF
+k29 = 7.13e-1 // Association of aBRAF with Mek
+k_29 = 1E-4 // Dissociation of aBRAF  from Mek
+k30 = 1.20E-03 // Binding of Erk to pMek
+k_30 = 3.2E-02 // Dissociation of Erk from pMek
+kp8 = 1.80E-01 // Phosphorylation of pY-Erk by pMek
+kp9 = 1.50E-02 // Phosphorylation of pT-Erk by pMek
+kp10 = 6.17E-02 // Phosphorylation of free pY-Erk by pMek
+kp11 = 5.70E-02 // Phosphorylation of free pT-Erk by pMek
+k_p8 = 4.00E-02 // Dephosphorylation of pTpY-Erk to pY-Erk
+k_p9 = 5.50E-02 // Dephosphorylation of pTpY-Erk to pT-Erk
+k_p10 = 5.00E-02 // Dephosphorylation of pY-Erk to Erk
+k_p11 = 5.00E-02 // Dephosphorylation of pT-Erk to Erk
+kp12 = 3.0E-02 // Inactivation of iBRAF by negative feedback
+k_p12 = 9.2E-03 // Reactivation of inactivated iBRAF
+kp13 = 2.800E-02 // Blocking dimerization of BRAF
+k_p13 = 5.00E-03 // Reactivation of membrane bound BRAF
+k31 = 4.00E-04 // Binding of RSK to Erk
+k_31 = 1.41E+00 // Dissociation of RSK from ERK
+kp14 = 5E-2 // phosphorylation of Rsk by Erk
+k_p14 = 5E-3 // dephosphorylation of phospho-Rsk
+kp15 = 0.0422 // Phosphorylation of SOS by RSK
+k_p15 = 6.7E-3 // Dephosphorylation of SOS
+
+
+// --------------------------------------------------------------------
+
+// Unit definitions:
+unit substance = 1e-9 mole;
+unit time_unit = second;
+unit nM = 1e-9 mole / litre;
+unit per_nM = litre / 1e-9 mole;
+unit per_sec = 1 / second;
+unit nM_per_s = 1e-9 mole / (litre * second);
+unit per_nMs = litre / (1e-9 mole * second);
+
+// Display Names:
+substance is "nmole";
+time_unit is "s";
+per_sec is "s-1";
+nM_per_s is "nM/s";
+per_nMs is "nM-1 s-1";
+extra is "extracellular space";
+end
